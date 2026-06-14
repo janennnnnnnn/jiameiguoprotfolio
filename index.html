@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jiamei Guo's Portfolio</title>
+  <style>
+    /* =============================================================
+       CSS VARIABLES
+       ============================================================= */
+    :root {
+      --bg: #F7F8FA;
+      --bg-alt: #F5F5F7;
+      --fg: #111111;
+      --muted: #6E6E73;
+      --card-bg: rgba(255, 255, 255, 0.72);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --blue-soft: #DDEBFF;
+      --purple-soft: #E7DDFB;
+      --green-soft: #DDEFE6;
+      --warm: #EFE7DC;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+      --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Monaco', monospace;
+      --nav-h: 52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--fg);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    /* Nav */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(247, 248, 250, 0.78);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .nav.scrolled { border-bottom-color: rgba(0, 0, 0, 0.06); background: rgba(247, 248, 250, 0.88); }
+    .nav-logo { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: var(--fg); }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; color: var(--muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-lang {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--muted); padding: 4px 10px;
+      border: 1px solid rgba(0,0,0,0.12); border-radius: 6px;
+      cursor: pointer; user-select: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .nav-lang:hover { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.2); }
+
+    /* Section */
+    .section { max-width: 1040px; margin: 0 auto; padding: 100px 40px; }
+    .section.has-bg { background: rgba(247,248,250,0.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: var(--radius-lg); margin-bottom: 40px; }
+    .main-content { position: relative; z-index: 3; }
+    .section-bg { background: rgba(247,248,250,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: var(--radius-lg); padding: 40px; }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 600; letter-spacing: -0.025em; line-height: 1.12;
+      color: var(--fg); margin-bottom: 16px;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: flex-start;
+      min-height: 100vh; padding-top: calc(var(--nav-h) + 64px);
+      max-width: 1040px; margin: 0 auto; padding-left: 40px; padding-right: 40px;
+    }
+    .hero-bg-video {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
+      object-fit: cover; will-change: transform;
+    }
+    .hero-text { display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 3; padding-top: 32px; }
+    .hero-text .hero-greeting,
+    .hero-text .hero-role,
+    .hero-text .hero-sub,
+    .hero-text .hero-slogan { }
+    .hero-greeting { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.2; color: var(--fg); }
+    .hero-name { font-family: var(--font-display); font-size: clamp(42px, 6.5vw, 68px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.08; color: var(--fg); }
+    .hero-role { font-family: var(--font-display); font-size: 20px; font-weight: 500; color: var(--muted); letter-spacing: -0.01em; }
+    .hero-sub { font-size: 17px; line-height: 1.65; color: var(--muted); max-width: 440px; }
+    .hero-slogan { font-family: var(--font-display); font-size: 18px; font-style: italic; font-weight: 400; color: var(--fg); letter-spacing: 0.01em; }
+    .hero-btns { display: flex; gap: 14px; margin-top: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 26px; font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+      border-radius: 100px; transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--fg); color: #fff; }
+    .btn-primary:hover { box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15); }
+    .btn-secondary { background: var(--card-bg); color: var(--fg); box-shadow: var(--shadow-sm); border: 1px solid var(--card-border); }
+    .btn-secondary:hover { box-shadow: var(--shadow-md); background: #fff; }
+
+    /* Hero photos */
+    .hero-photos { position: relative; height: 480px; z-index: 3; display: flex; align-items: center; justify-content: center; }
+    .hero-photo-stack { position: relative; width: 360px; height: 400px; }
+    .hero-photo {
+      position: absolute; width: 260px; height: 320px; border-radius: var(--radius-md);
+      object-fit: cover; box-shadow: var(--shadow-lg);
+      transition: transform 0.5s, z-index 0.5s;
+    }
+    .hero-photo.p0 { top: 30px; left: 0; z-index: 2; transform: rotate(-2deg); }
+    .hero-photo.p1 { top: 60px; left: 60px; z-index: 1; transform: rotate(3deg); }
+    @keyframes photoCycle {
+      0%, 45% { z-index: 2; }
+      50%, 95% { z-index: 1; }
+      100% { }
+    }
+    .hero-photo-stack:hover .hero-photo { transform: rotate(0deg) scale(1.03); z-index: 10; }
+    .works-divider {
+      margin-top: 56px; padding-top: 24px; padding-bottom: 24px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 600; letter-spacing: -0.015em;
+      color: var(--fg);
+      scroll-margin-top: var(--nav-h);
+    }
+    .works-divider-sub {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4.5vw, 48px);
+      font-weight: 600; letter-spacing: -0.025em; line-height: 1.12;
+      color: var(--fg); margin-top: 8px;
+    }
+
+    /* Card grid */
+    .card-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; scroll-margin-top: calc(var(--nav-h) + 24px);
+    }
+    .card {
+      position: relative; border-radius: var(--radius-md); overflow: hidden;
+      box-shadow: var(--shadow-sm); cursor: pointer;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      min-height: 380px; isolation: isolate;
+      transition: transform 0.35s, box-shadow 0.35s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .card::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.05) 100%);
+      pointer-events: none;
+    }
+    .card-media-bg {
+      position: absolute; inset: 0; z-index: 0;
+      object-fit: cover; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .card-media-bg.bg-img { background-size: cover; background-position: center; }
+    .card-body { position: relative; z-index: 2; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+    .card-title { font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: #fff; }
+    .card-desc { font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,0.78); }
+    .breath-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(180, 210, 195, 0.7); animation: breathe 4s ease-in-out infinite; margin: 0 auto; }
+    @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(2.2); opacity: 0.85; } }
+
+    /* Contact */
+    .contact-info { display: flex; flex-direction: column; gap: 16px; font-size: 16px; color: var(--fg); }
+    .contact-info a { color: var(--fg); font-weight: 500; }
+    .contact-email { font-family: var(--font-mono); font-size: 14px; color: var(--fg); }
+    /* contact-text shadow removed */
+
+    /* Footer */
+    .footer { width: 100%; padding: 32px 40px 48px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 12px; color: var(--muted); letter-spacing: 0.02em; background: rgba(247,248,250,0.94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); position: relative; z-index: 3; }
+    .footer-inner { max-width: 1040px; margin: 0 auto; }
+
+    /* Detail overlay */
+    .detail-overlay { position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: 0; z-index: 99; background: var(--bg); overflow-y: auto; display: none; -webkit-overflow-scrolling: touch; }
+    .detail-overlay.open { display: block; }
+    .detail-inner { max-width: 760px; margin: 0 auto; padding: 80px 40px 120px; }
+    .detail-back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 36px; cursor: pointer; transition: color 0.2s; }
+    .detail-back:hover { color: var(--fg); }
+    .detail-back svg { width: 16px; height: 16px; }
+    .detail-category { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .detail-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; color: var(--fg); margin-bottom: 4px; }
+    .detail-title-cn { font-size: 16px; color: var(--muted); margin-bottom: 12px; }
+    .detail-tagline { font-size: 17px; line-height: 1.6; color: var(--muted); max-width: 560px; margin-bottom: 28px; }
+    .detail-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+    .detail-meta-block { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 16px 18px; }
+    .detail-meta-label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .detail-meta-value { font-size: 13.5px; line-height: 1.5; color: var(--fg); }
+    .detail-section { margin-bottom: 32px; }
+    .detail-section h3 { font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -0.015em; color: var(--fg); margin-bottom: 8px; }
+    .detail-section p { font-size: 15px; line-height: 1.7; color: var(--muted); }
+    .detail-media-large { width: 100%; min-height: 200px; border-radius: var(--radius-md); background: rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); letter-spacing: 0.02em; margin-bottom: 16px; overflow: hidden; }
+    .detail-video { width: 100%; border-radius: var(--radius-md); }
+    .detail-pdf-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500; border: 1px solid var(--card-border); border-radius: 8px; color: var(--muted); background: var(--card-bg); transition: border-color 0.2s, color 0.2s; cursor: pointer; }
+    .detail-pdf-btn:hover { border-color: rgba(0,0,0,0.18); color: var(--fg); }
+
+    /* Gallery */
+    .detail-gallery { display: flex; gap: 0; overflow-x: auto; padding-bottom: 16px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
+    .detail-gallery img { flex-shrink: 0; height: 280px; border-radius: var(--radius-sm); scroll-snap-align: start; margin-right: -72px; position: relative; box-shadow: var(--shadow-md); transition: transform 0.3s, z-index 0.3s; }
+    .detail-gallery img:nth-child(1) { z-index: 5; } .detail-gallery img:nth-child(2) { z-index: 4; }
+    .detail-gallery img:nth-child(3) { z-index: 3; } .detail-gallery img:nth-child(4) { z-index: 2; }
+    .detail-gallery img:hover { transform: scale(1.05); z-index: 20 !important; }
+
+    /* Gallery label */
+    .gallery-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 12px; }
+    .detail-innovation { margin-bottom: 32px; }
+    .detail-innovation h3 { margin-bottom: 12px; }
+    .innovation-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 12px; }
+    .innovation-item h4 { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--fg); margin-bottom: 4px; }
+    .innovation-item p { font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+
+    /* PDF viewer */
+    .pdf-viewer { width: 100%; margin-bottom: 16px; }
+    .pdf-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .pdf-tab { padding: 8px 18px; font-size: 13px; font-weight: 500; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; color: var(--muted); background: var(--card-bg); transition: all 0.2s; }
+    .pdf-tab.active { background: var(--fg); color: #fff; border-color: var(--fg); }
+    .pdf-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .pdf-toolbar button { padding: 6px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--card-border); border-radius: 6px; cursor: pointer; color: var(--fg); background: var(--card-bg); }
+    .pdf-toolbar button:hover { background: #fff; }
+    .pdf-toolbar .pdf-open { background: var(--fg); color: #fff; }
+    .pdf-toolbar .pdf-open:hover { background: #333; }
+    .pdf-zoom-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-left: auto; }
+    .pdf-iframe-wrap { position: relative; overflow: hidden; border: 1px solid var(--card-border); border-radius: var(--radius-sm); background: #fff; }
+    .pdf-iframe-wrap iframe { width: 100%; border: 0; display: block; }
+    .pdf-watermark { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .pdf-watermark span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-family: var(--font-display); font-size: 52px; color: rgba(0,0,0,0.04); white-space: nowrap; letter-spacing: 0.3em; font-weight: 600; }
+
+    /* Iframe scaler */
+    .iframe-scaler { overflow: hidden; border-radius: var(--radius-sm); border: 1px solid var(--card-border); background: #fff; margin-bottom: 16px; }
+    .iframe-scaler iframe { border: 0; transform-origin: top left; }
+
+    /* Innovation points */
+    .detail-innovation { margin-bottom: 32px; }
+
+    /* Breathing case study */
+    .breath-circle-wrap { display: flex; align-items: center; justify-content: center; padding: 48px 0; background: radial-gradient(circle,var(--green-soft) 0%,rgba(221,239,230,0.3) 60%,transparent 100%); border-radius: var(--radius-md); margin-bottom: 32px; }
+    .breath-patterns { display: flex; flex-direction: column; gap: 12px; }
+    .breath-pattern-item { display: flex; flex-direction: column; gap: 4px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 18px; }
+    .bp-name { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--fg); }
+    .bp-desc { font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+    .breath-ref-img-wrap { border-radius: var(--radius-md); overflow: hidden; margin-bottom: 24px; }
+    .breath-ref-img { width: 100%; display: block; }
+
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr 1fr; gap: 32px; min-height: auto; padding-top: 100px; padding-bottom: 60px; }
+      .hero-photos { height: 360px; }
+      .hero-photo-stack { width: 280px; height: 340px; }
+      .hero-photo { width: 210px; height: 260px; }
+      .hero-photo.p0 { top: 20px; left: 0; }
+      .hero-photo.p1 { top: 50px; left: 40px; }
+      .card { min-height: 320px; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+      .detail-gallery img { height: 200px; margin-right: -48px; }
+    }
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; }
+      .nav-links { gap: 14px; }
+      .nav-links a { font-size: 12px; }
+      .nav-lang { font-size: 11px; padding: 3px 8px; }
+      .section { padding: 72px 20px; }
+      .hero { padding: 100px 20px 48px; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .hero-photos { height: 240px; }
+      .hero-photo-stack { width: 180px; height: 220px; }
+      .hero-photo { width: 140px; height: 180px; border-radius: 14px; }
+      .hero-photo.p0 { top: 10px; left: 0; }
+      .hero-photo.p1 { top: 30px; left: 28px; }
+      .card { min-height: 280px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .detail-meta { grid-template-columns: 1fr; }
+      .detail-inner { padding: 60px 20px 80px; }
+      .hero-btns { flex-direction: column; align-items: flex-start; }
+      .hero-name { font-size: 32px; }
+      .hero-greeting { font-size: 22px; }
+      .detail-gallery img { height: 160px; margin-right: -36px; }
+      .works-divider-sub { font-size: clamp(22px, 5vw, 32px); }
+      .hero-text { padding-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Jiamei Guo</a>
+    <ul class="nav-links">
+      <li><a href="#hero" data-scroll data-i18n="nav.intro">介绍</a></li>
+      <li><a href="#work-ai" data-scroll data-i18n="nav.aiProducts">工作AI产品</a></li>
+      <li><a href="#personal-explore" data-scroll data-i18n="nav.personal">个人探索</a></li>
+      <li><a href="#contact" data-scroll data-i18n="nav.contact">联系我</a></li>
+    </ul>
+    <button class="nav-lang" id="langToggle" aria-label="Switch language">EN</button>
+  </nav>
+
+  <!-- HERO BG VIDEO -->
+  <video class="hero-bg-video" id="heroBgVideo" src="mqd8389p-kling_20260614_作品_镜头慢慢推进_画面里_2919_0.mp4" autoplay loop muted playsinline></video>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-text">
+      <p class="hero-greeting" data-i18n="hero.greeting">Hi，我是郭迦美</p>
+      <p class="hero-role" data-i18n="hero.role">UI/UE 设计师</p>
+      <p class="hero-sub" data-i18n="hero.sub">探索 AI-Native 工作方式，将设计从界面与交互延展到用户洞察、品牌表达与落地实现。<br><br data-i18n-keep>我喜欢自然、看展、记录生活</p>
+      <p class="hero-slogan">Amour Fati. <span data-i18n="hero.slogan">保持探索与学习。</span></p>
+      <div class="hero-btns">
+        <a href="mqd79hbi-郭迦美_D中文简历.docx" download class="btn btn-primary" data-i18n="hero.btnCn">中文简历</a>
+        <a href="mqd79icv-JiameiGuo_D-Resume.pdf" download class="btn btn-secondary" data-i18n="hero.btnEn">English CV</a>
+      </div>
+    </div>
+    <div class="hero-photos">
+      <div class="hero-photo-stack">
+        <img class="hero-photo p0" src="mqd4rdzk-DSCF3647.jpeg" alt="Photo 1" />
+        <img class="hero-photo p1" src="mqd524st-IMG_1001-2.jpeg" alt="Photo 2" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+  <!-- WORK AI PRODUCTS -->
+  <section class="section has-bg" id="work-ai">
+    <h2 class="section-title" data-i18n="works.title">工作 · AI产品</h2>
+    <div class="card-grid" id="cardsProfessional"></div>
+  </section>
+
+  <!-- PERSONAL EXPLORATIONS -->
+  <section class="section has-bg" id="personal-section" style="padding-top:40px;">
+    <div class="works-divider" id="personal-explore" data-i18n="works.personalLabel" style="border-top:none;margin-top:0;padding-top:0;">个人探索</div>
+    <p class="works-divider-sub" data-i18n="works.personalSub">创意思辨、洞察"人"，<br>打造可落地的品牌体验</p>
+    <div class="card-grid" id="cardsPersonal" style="margin-top:32px;"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section has-bg contact" id="contact">
+    <h2 class="section-title" data-i18n="contact.title">联系我</h2>
+    <div class="contact-info">
+      <p class="contact-email contact-text"><span data-i18n="contact.email">邮箱</span>：janeguo0000@163.com</p>
+    </div>
+  </section>
+
+  </div><!-- .main-content -->
+  <footer class="footer"><div class="footer-inner"><p data-i18n="footer">&copy; 2026 Jiamei Guo. 使用 AI-Native 工作流设计与构建。</p></div></footer>
+
+  <!-- DETAIL OVERLAY -->
+  <div class="detail-overlay" id="detailOverlay"><div class="detail-inner" id="detailInner"></div></div>
+
+  <script>
+  (function () {
+    /* ============================================================
+       I18N
+       ============================================================ */
+    var i18n = {
+      cn: {
+        nav: { intro: '介绍', aiProducts: '工作AI产品', personal: '个人探索', contact: '联系我' },
+        langToggle: 'EN',
+        hero: {
+          greeting: 'Hi，我是郭迦美',
+          role: 'UI/UE 设计师',
+          sub: '探索 AI-Native 工作方式，将设计从界面与交互延展到用户洞察、品牌表达与落地实现。<br><br>我喜欢自然、看展、记录生活',
+          slogan: '保持探索与学习。',
+          btnCn: '中文简历',
+          btnEn: 'English CV'
+        },
+        works: {
+          title: '工作 · AI产品',
+          personalLabel: '个人探索',
+          personalSub: '创意思辨、洞察"人"，<br>打造可落地的品牌体验',
+        },
+        contact: { title: '联系我', email: '邮箱' },
+        detail: {
+          back: '返回作品', role: '角色', tools: '工具', output: '产出',
+          problem: '问题', myWork: '我的工作', outcome: '成果', reflection: '反思',
+          videoPlaceholder: '视频占位符 — 替换为真实嵌入',
+          viewPdf: '查看 PDF', openNew: '新窗口打开',
+          galleryLabel: '界面截图浏览 — 横向滚动查看',
+          pdfTab1: 'HMI 设计项目', pdfTab2: 'HMI 研究报告',
+          innovation: '创新点',
+          innovation1Title: '思辨游戏理解品牌',
+          innovation1Desc: '通过思辨设计将品牌理念转化为可感知的游戏化体验，使品牌叙事从单向传播变为双向互动。',
+          innovation2Title: '线下互动体验',
+          innovation2Desc: '打破单向传播，构建有文化深度的线下互动场景，让用户通过身体参与建立深层品牌记忆。',
+          innovation3Title: '不同于网红感的人生信条',
+          innovation3Desc: '拒绝流量逻辑，用真诚的文化叙事和设计品质建立情感连接，表达品牌独立精神。',
+          tokenHubLabel: 'TokenHub 看板 — 可交互操作',
+          breathBackground: '背景',
+          breathDesignConcept: '设计理念',
+          breathPatterns: '呼吸节奏模式',
+          breathRefImage: '呼吸原理参考图',
+          breathRefGif: '呼吸动效示意'
+        },
+        footer: '&copy; 2026 Jiamei Guo. 使用 AI-Native 工作流设计与构建。',
+        projects: {
+          a: { category:'工作AI产品', title:'中国移动企业 AI IDE 设计变革与提效', tagline:'探索 AI-Native 工作流、设计系统与编码约束如何提升企业级设计到开发效率。', role:'UI/UE 设计、AI 辅助实现、设计系统思维', tools:'Figma、AI 编程工具、HTML/CSS、提示词库', output:'登录页原型、设计系统探索、开发约束、运营视觉', problem:'企业 AI 工具需要更高效且一致的设计到开发工作流。传统设计交付通常依赖反复沟通、静态页面和脱节的实现过程。', work:'我探索了 AI-Native 工作流，设计并实现了界面原型，构建了可复用的设计规则，并将设计经验转化为提示词和开发约束。', outcome:'该工作流提升了需求对齐、设计探索和交互实现的速度，也帮助将设计交付从静态视觉转变为可执行体验原型。', reflection:'AI 提升了效率，但设计师仍需保持判断力、情感敏感度和产品思维。我的目标是将 AI 作为协作者，而非设计思维的替代品。', desc:'探索 AI-Native 工作流、设计系统与编码约束如何提升企业级设计到开发效率。', media:'video', thumbs:['mqd42exx-Agent-页面首页.png','mqd42exx-Agent-页面首页-选择-skill.png','mqd42exx-右侧展开文件-展开目录.png','mqd42exw-右侧展开审查代码.png','mqd42exr-生成中mix过程样式.png','mqd42exp-生成中右侧展开文档.png','mqd42exp-设置.png','mqd42exo-设置-智能体行为.png','mqd42exn-设置-智能体行为-编辑智能体.png','mqd42exm-设置-提供商.png','mqd42exk-设置-1.png','mqd42hjj-editor页面首页.png','mqd42hjt-editor页面首页2.png'] },
+          b: { category:'工作AI产品', title:'中国移动企业 Dashboard AI Native 驱动实现', tagline:'在数小时内完成从需求对齐到交互实现的企业驾驶舱原型。', role:'驾驶舱 UI 设计、交互原型、AI 辅助实现', tools:'Figma、HTML/CSS、AI 编程工作流', output:'运营驾驶舱原型与 GIF 演示', problem:'企业团队需要能快速传达运营状态、效率趋势与用量数据的驾驶舱。', work:'我在企业设计规范下完成了驾驶舱结构、视觉方向与交互原型。', outcome:'设计过程从需求对齐到视觉方案约 1 小时，从布局到交互实现约 2 小时。', reflection:'驾驶舱设计不只是关于图表，而是让复杂数据变得可读、可操作，并与业务决策对齐。', desc:'在数小时内完成从需求对齐到交互实现的企业驾驶舱原型。', media:'iframe', thumbs:['mqd4zmvz-png-_1_.png','mqd4zm4h-jpg.jpeg','mqd4zli4-jpg-_1_.jpeg','mqd4zku8--38.png','mqd4zk4e--35.png','mqd4zjag--35-_1_.png','mqd524st-IMG_1001-2.jpeg'] },
+          c: { category:'工作AI产品', title:'Apitiv 概念 HMI 交互方式革新', tagline:'面向未来的 HMI 概念，探索手势交互、情感陪伴、气味体验与全息沟通。', role:'HMI 概念设计、交互研究、视频叙事', tools:'Figma、视频原型、概念研究', output:'研究报告、概念交互视频、功能演示', problem:'未来出行体验不应只关注驾驶效率，还可以提供情感价值、陪伴感与新的交互可能。', work:'我探索了手势交互、情感陪伴、气味体验与全息沟通作为未来 HMI 方向。', outcome:'项目形成了面向未来的概念体系与演示视频，传达核心交互理念。', reflection:'HMI 设计可以超越功能控制，成为更具情感性、氛围感和以人为中心的体验层。', desc:'面向未来的 HMI 概念，探索手势交互、情感陪伴、气味体验与全息沟通。', media:'pdf-dual' },
+          d: { category:'个人探索', title:'TEAM WANG 品牌线下体验与官网概念设计', tagline:'以粉丝驱动的品牌体验概念，融合线下活动设计、文化叙事、互动与网站呈现。', role:'品牌体验设计、线下活动概念、网站概念', tools:'Figma、视觉设计、品牌研究', output:'线下体验方案、网站设计概念、视觉画廊', problem:'早期品牌社群需要的不仅是视觉识别，还需要文化叙事、线下参与和情感连接。', work:'我创建了以粉丝驱动的品牌体验概念，融合线下活动、文化互动与网站呈现。', outcome:'项目形成了从品牌理解到线下体验与数字传播的完整概念方案。', reflection:'品牌设计不仅是风格，更是创造一个让用户感受到归属、情感与参与的空间。', desc:'以粉丝驱动的品牌体验概念，融合线下活动设计、文化叙事、互动与网站呈现。', media:'gallery', gallery:['mqd5cgks-3-0.jpg','mqd5ch7g-3-1.jpg','mqd5chtd-3-2.jpg','mqd5cifr-3-3.jpg','mqd5cj29-3-4.jpg','mqd5cjoc-3-5.jpg','mqd5ckbp-3-6.jpg','mqd5ckxv-3-7.jpg','mqd5cljg-3-8.jpg','mqd5cm5n-3-9.jpg','mqd5cmsa-3-10.jpg','mqd5cneo-3-11.jpg'] },
+          e: { category:'个人探索', title:'疗愈呼吸：随时给自己喘口气的体验设计', tagline:'在线与线下结合的平静呼吸体验，探索自然、注意力、情感与温和的技术。', role:'产品概念、交互设计、疗愈体验设计', tools:'Figma、CSS 动画、Apple Vision 风格界面概念', output:'呼吸动画、在线体验概念、线下自然引导概念', problem:'在 AI 时代，人们面临焦虑、分心和心理疲劳。一些用户也难以真正放慢脚步、走进自然环境。', work:'我设计了在线呼吸体验与线下自然引导概念，使用平静视觉、呼吸节奏与 Apple Vision 风格空间引导。', outcome:'该概念为用户提供了一种温和的方式，暂停、呼吸、重新连接自己的身体、注意力与周围环境。', reflection:'好的技术不应总是要求用户做更多，有时它应该帮助用户慢下来，注意到已经存在于此的事物。', desc:'在线与线下结合的平静呼吸体验，探索自然、注意力、情感与温和的技术。', media:'breathing', bgVideo:'mqd8389p-kling_20260614_作品_镜头慢慢推进_画面里_2919_0.mp4', background:'在办公时很难一下子找到心旷神怡的环境呼吸调节情绪。', designConcept:'用水晕染传导情绪，并引导情绪，呼吸理念根据身体数据引导，呼吸节奏会自动切换（具体参考图中的呼吸原理）：', breathingPatterns:[{name:'HRV 共振',desc:'默认 5.5 秒吸 / 5.5 秒呼，约 5.5 次/分钟'},{name:'长呼气',desc:'压力高、心率高或 HRV 低时，4 秒吸 / 1 秒停 / 7 秒呼'},{name:'稳定盒式',desc:'状态较稳定时，4 秒吸 / 2 秒停 / 4 秒呼'}], refImage:'mqdq9d3k-5202.jpg', refGif:'mqdqdicb-392cafd1-44d7-4763-b594-d858ef270e0c.gif' },
+          f: { category:'个人探索', title:'Smell to feel 视觉障碍者的气味社交体验设计', tagline:'从感官人类学出发，为视觉障碍者设计以气味为媒介的社交体验产品。', role:'服务设计、感官体验设计、用户研究', tools:'Figma、用户访谈、感官原型', output:'服务蓝图、交互概念、感官体验方案', problem:'视觉障碍者在社交场景中难以获取视觉社交线索，现有的社交产品对非视觉感官的关注不足。', work:'从感官人类学视角出发，设计以嗅觉为核心媒介的社交体验，让气味成为连接人与人之间的桥梁。', outcome:'形成了一套完整的气味社交体验设计方案，探索了非视觉感官在社交产品中的应用可能性。', reflection:'设计不应只服务于主流感官。当我们关注被忽视的感官维度，设计可以创造更具包容性的连接方式。', desc:'从感官人类学出发，为视觉障碍者设计以气味为媒介的社交体验产品。', media:'thumb', thumb:'mqd60fw6-1-5.jpg', gallery:['mqd60csz-1-0.jpg','mqd60del-1-1.jpg','mqd60e0b-1-2.jpg','mqd60emi-1-3.jpg','mqd60f9o-1-4.jpg','mqd60fw6-1-5.jpg','mqd60ghp-1-6.jpg','mqd60h3l-1-7.jpg','mqd60hq9-1-8.jpg'] },
+          g: { category:'个人探索', title:'苏州双塔旧社区文化品牌改造设计', tagline:'从田野调研到品牌落地，以设计介入旧社区文化再生，探索品牌设计的社会价值。', role:'品牌设计、导视系统、空间叙事', tools:'Figma、田野调研、视觉设计', output:'品牌识别系统、导视设计、空间体验方案', problem:'旧社区在城市化进程中面临文化记忆流失与社区认同感减弱的双重挑战。', work:'我深入苏州双塔社区进行田野调研，从地方文化中提炼品牌基因，设计了完整的品牌识别系统、导视体系与空间体验方案。', outcome:'项目形成了一套从调研到落地的社区品牌设计方法论，为旧社区的文化再生提供了可参照的设计路径。', reflection:'品牌设计不仅是商业工具，也是社会介入的方式。设计师可以成为社区文化再生的催化剂。', desc:'从田野调研到品牌落地，以设计介入旧社区文化再生。', media:'thumb', thumb:'mqd6dbzt-OI_IND-MA-Jiamei-Guo-Xiaohe-Wang-Yidi-Zhao-tr.jpg', gallery:['mqd62o92-IND403_Brief3_2250646_00.png','mqd62poj-IND403_Brief3_2250646_01.png','mqd62qaa-IND403_Brief3_2250646_02.png','mqd62r6q-IND403_Brief3_2250646_03.png','mqd62sl7-IND403_Brief3_2250646_04.png','mqd62tiz-IND403_Brief3_2250646_06.png','mqd62ub9-IND403_Brief3_2250646_07.png','mqd62uwx-IND403_Brief3_2250646_08.png','mqd62vpe-IND403_Brief3_2250646_09.png','mqd62wh9-IND403_Brief3_2250646_10.png','mqd62x20-IND403_Brief3_2250646_11.png','mqd62xoa-IND403_Brief3_2250646_12.png','mqd62xzs-IND403_Brief3_2250646_13.png','mqd62ylr-IND403_Brief3_2250646_14.png','mqd62z74-IND403_Brief3_2250646_16.png','mqd62zz9-IND403_Brief3_2250646_17.png','mqd630nt-IND403_Brief3_2250646_19.png','mqd631yw-IND403_Brief3_2250646_20.png','mqd632qt-IND403_Brief3_2250646_21.png','mqd633jn-IND403_Brief3_2250646_22.png','mqd634c5-IND403_Brief3_2250646_23.png','mqd63540-IND403_Brief3_2250646_24.png','mqd63617-IND403_Brief3_2250646_25.png','mqd6cgwj-IND403_Brief3_2250646_00.png','mqd6cgwo-IND403_Brief3_2250646_01.png','mqd6cgwt-IND403_Brief3_2250646_02.png','mqd6cgwz-IND403_Brief3_2250646_03.png','mqd6cgx7-IND403_Brief3_2250646_04.png','mqd6cgxg-IND403_Brief3_2250646_06.png'] },
+          h: { category:'个人探索', title:'AI Travel Planner', tagline:'AI 规划旅行产品 + 未来去界面化交互新模式。', role:'产品概念、交互设计、AI 应用探索', tools:'Figma、AI 工具、交互原型', output:'AI 旅行规划概念、去界面化交互方案', problem:'传统旅行规划需要大量人工搜索与对比，用户决策链路长且体验碎片化。去界面化交互可能成为下一个交互范式。', work:'探索 AI 驱动的旅行规划产品概念，结合去界面化的自然交互模式，让用户通过语音、语义理解与智能推荐完成旅行规划。', outcome:'形成了 AI 旅行规划的产品概念与去界面化交互方案，探索了未来交互的新可能性。', reflection:'AI 不只是工具，它可以成为理解用户意图的代理。去界面化不意味着消除设计，而是将设计从屏幕延展到对话、感知与情境。', desc:'AI 规划旅行产品 + 未来去界面化交互新模式。', media:'thumb', thumb:'mqdqh2ue-3.jpg', gallery:['mqdqh2ue-3.jpg','mqdqh4hx-4.jpg','mqdqh5i5-5.jpg','mqdqh6te-7.jpg','mqdqh88c-8.jpg','mqdqh9bm-9.jpg','mqdqhau1-IMG_1001-2.jpeg','mqdqhcap-IMG_1003-2-_1_.jpeg','mqdqhduu-IMG_7530-_1_.jpeg','mqdqlnsa-10.jpg','mqdqnvc8-11.jpg','mqdqnw7m-12.jpg','mqdqnxhh-13.jpg','mqdqnyln-14.jpg','mqdqnzg0-15.jpg'] }
+        }
+      },
+      en: {
+        nav: { intro: 'Intro', aiProducts: 'AI Products', personal: 'Personal', contact: 'Contact' },
+        langToggle: '中文',
+        hero: {
+          greeting: "Hi, I'm Jiamei Guo",
+          role: 'UI/UE Designer',
+          sub: 'Exploring AI-native workflows to expand design from interface and interaction to insight, brand communication, and implementation.<br><br>I love nature, exhibitions, and documenting life.',
+          slogan: 'Keep exploring and learning.',
+          btnCn: '中文简历',
+          btnEn: 'English CV'
+        },
+        works: {
+          title: 'Work · AI Products',
+          personalLabel: 'Personal Explorations',
+          personalSub: 'Critical thinking, human insight,<br>and branding that lands',
+        },
+        contact: { title: "Let's connect", email: 'Email' },
+        detail: {
+          back: 'Back to Works', role: 'Role', tools: 'Tools', output: 'Output',
+          problem: 'Problem', myWork: 'My Work', outcome: 'Outcome', reflection: 'Reflection',
+          videoPlaceholder: 'Video Placeholder — replace with real embed',
+          viewPdf: 'View PDF', openNew: 'Open in new tab',
+          galleryLabel: 'Screenshots — scroll to browse',
+          pdfTab1: 'HMI Design Project', pdfTab2: 'HMI Research Report',
+          innovation: 'Innovation',
+          innovation1Title: 'Speculative Play to Understand Brand',
+          innovation1Desc: 'Transforms brand philosophy into perceptible gamified experiences through speculative design, turning brand narrative from one-way communication into interactive dialogue.',
+          innovation2Title: 'Offline Interactive Experience',
+          innovation2Desc: 'Breaks one-way communication by building culturally deep offline interactive scenarios that let users form lasting brand memories through physical participation.',
+          innovation3Title: 'A Life Creed Beyond Influencer Aesthetics',
+          innovation3Desc: 'Rejects traffic logic, builds emotional connection through sincere cultural narrative and design quality, expressing the independent spirit of the brand.',
+          tokenHubLabel: 'TokenHub Dashboard — fully interactive',
+          breathBackground: 'Background',
+          breathDesignConcept: 'Design Concept',
+          breathPatterns: 'Breathing Rhythm Patterns',
+          breathRefImage: 'Breathing Principle Reference',
+          breathRefGif: 'Breathing Animation Demo'
+        },
+        footer: '&copy; 2026 Jiamei Guo. Designed and built with AI-native workflow.',
+        projects: {
+          a: { category:'AI Products', title:'China Mobile Enterprise AI IDE Design Transformation', tagline:'Exploring how AI-native workflows, design systems, and coding constraints improve enterprise design-to-development efficiency.', role:'UI/UE Design, AI-assisted Implementation, Design System Thinking', tools:'Figma, AI Coding Tools, HTML/CSS, Prompt Library', output:'Login page prototype, design system exploration, development constraints, operation visuals', problem:'Enterprise AI tools need more efficient and consistent design-to-development workflows. Traditional design delivery often depends on repeated communication, static screens, and disconnected implementation.', work:'I explored an AI-native workflow by designing and implementing interface prototypes, building reusable design rules, and translating design experience into prompts and development constraints.', outcome:'The workflow improved the speed of requirement alignment, design exploration, and interactive implementation. It also helped shift design delivery from static visuals to executable experience prototypes.', reflection:'AI improves efficiency, but designers still need to keep judgment, emotional sensitivity, and product thinking. My goal is to use AI as a collaborator, not as a replacement for design thinking.', desc:'Exploring how AI-native workflows, design systems, and coding constraints improve enterprise design-to-development efficiency.', media:'video', thumbs:['mqd42exx-Agent-页面首页.png','mqd42exx-Agent-页面首页-选择-skill.png','mqd42exx-右侧展开文件-展开目录.png','mqd42exw-右侧展开审查代码.png','mqd42exr-生成中mix过程样式.png','mqd42exp-生成中右侧展开文档.png','mqd42exp-设置.png','mqd42exo-设置-智能体行为.png','mqd42exn-设置-智能体行为-编辑智能体.png','mqd42exm-设置-提供商.png','mqd42exk-设置-1.png','mqd42hjj-editor页面首页.png','mqd42hjt-editor页面首页2.png'] },
+          b: { category:'AI Products', title:'Enterprise Dashboard Built with AI-Native Workflow', tagline:'Built an enterprise dashboard prototype from requirement alignment to interactive implementation within hours.', role:'Dashboard UI Design, Interaction Prototype, AI-assisted Implementation', tools:'Figma, HTML/CSS, AI Coding Workflow', output:'Operational dashboard prototype and GIF demo', problem:'Enterprise teams need dashboards that can quickly communicate operational status, efficiency trends, and token usage data.', work:'I completed the dashboard structure, visual direction, and interactive prototype under enterprise design guidelines.', outcome:'The design process moved from requirement alignment to visual solution in around 1 hour, and from layout to interactive implementation in around 2 hours.', reflection:'Dashboard design is not just about charts. It is about making complex data readable, actionable, and aligned with business decisions.', desc:'Built an enterprise dashboard prototype from requirement alignment to interactive implementation within hours.', media:'iframe', thumbs:['mqd4zmvz-png-_1_.png','mqd4zm4h-jpg.jpeg','mqd4zli4-jpg-_1_.jpeg','mqd4zku8--38.png','mqd4zk4e--35.png','mqd4zjag--35-_1_.png','mqd524st-IMG_1001-2.jpeg'] },
+          c: { category:'AI Products', title:'Apitiv Concept HMI Interaction Innovation', tagline:'A future-oriented HMI concept exploring gesture interaction, emotional companionship, scent experience, and holographic communication.', role:'HMI Concept Design, Interaction Research, Video Storytelling', tools:'Figma, Video Prototype, Concept Research', output:'Research report, concept interaction video, feature demo', problem:'Future mobility experiences should not only focus on driving efficiency. They can also provide emotional value, companionship, and new interaction possibilities.', work:'I explored gesture interaction, emotional companionship, scent experience, and holographic communication as future HMI directions.', outcome:'The project formed a future-oriented concept system and a demo video to communicate key interaction ideas.', reflection:'HMI design can move beyond functional control. It can become a more emotional, ambient, and human-centered experience layer.', desc:'A future-oriented HMI concept exploring gesture interaction, emotional companionship, scent experience, and holographic communication.', media:'pdf-dual' },
+          d: { category:'Personal Exploration', title:'TEAM WANG Brand Experience Concept', tagline:'A fan-driven brand experience concept combining offline event design, cultural storytelling, interaction, and website presentation.', role:'Brand Experience Design, Offline Activity Concept, Website Concept', tools:'Figma, Visual Design, Brand Research', output:'Offline experience proposal, website design concept, visual gallery', problem:'Early brand communities need more than visual identity. They need cultural storytelling, offline participation, and emotional connection.', work:'I created a fan-driven brand experience concept that combines offline activity, cultural interaction, and website presentation.', outcome:'The project formed a complete concept from brand understanding to offline experience and digital communication.', reflection:'Brand design is not only about style. It is about creating a space where users can feel belonging, emotion, and participation.', desc:'A fan-driven brand experience concept combining offline event design, cultural storytelling, interaction, and website presentation.', media:'gallery', gallery:['mqd5cgks-3-0.jpg','mqd5ch7g-3-1.jpg','mqd5chtd-3-2.jpg','mqd5cifr-3-3.jpg','mqd5cj29-3-4.jpg','mqd5cjoc-3-5.jpg','mqd5ckbp-3-6.jpg','mqd5ckxv-3-7.jpg','mqd5cljg-3-8.jpg','mqd5cm5n-3-9.jpg','mqd5cmsa-3-10.jpg','mqd5cneo-3-11.jpg'] },
+          e: { category:'Personal Exploration', title:'Healing Breath: A Calming Breathing Experience', tagline:'A calming online and offline breathing experience exploring nature, attention, emotion, and gentle technology.', role:'Product Concept, Interaction Design, Healing Experience Design', tools:'Figma, CSS Animation, Apple Vision-style Interface Concept', output:'Breathing animation, online experience concept, offline nature-guided concept', problem:'In the AI era, people face anxiety, distraction, and mental fatigue. Some users also struggle to slow down and truly enter natural environments.', work:'I designed an online breathing experience and an offline nature-guided concept using calm visuals, breathing rhythm, and Apple Vision-inspired spatial guidance.', outcome:'The concept provides a gentle way for users to pause, breathe, and reconnect with their body, attention, and surroundings.', reflection:'Good technology should not always ask users to do more. Sometimes it should help users slow down and notice what is already around them.', desc:'A calming online and offline breathing experience exploring nature, attention, emotion, and gentle technology.', media:'breathing', bgVideo:'mqd8389p-kling_20260614_作品_镜头慢慢推进_画面里_2919_0.mp4', background:'In office environments, it is difficult to quickly find a refreshing setting to breathe and regulate emotions.', designConcept:'Using water diffusion to conduct and guide emotions. The breathing rhythm is guided by body data and adjusts automatically (see the breathing principles in the reference image):', breathingPatterns:[{name:'HRV Resonance',desc:'Default 5.5s inhale / 5.5s exhale, ~5.5 breaths/min'},{name:'Long Exhale',desc:'When stress is high, heart rate is high, or HRV is low — 4s inhale / 1s pause / 7s exhale'},{name:'Box Breathing',desc:'When state is relatively stable — 4s inhale / 2s pause / 4s exhale'}], refImage:'mqdq9d3k-5202.jpg', refGif:'mqdqdicb-392cafd1-44d7-4763-b594-d858ef270e0c.gif' },
+          f: { category:'Personal Exploration', title:'Smell to feel — Scent-based Social Experience for the Visually Impaired', tagline:'A sensory anthropology-driven social experience design using scent as a medium for connection among visually impaired individuals.', role:'Service Design, Sensory Experience Design, User Research', tools:'Figma, User Interviews, Sensory Prototyping', output:'Service blueprint, interaction concept, sensory experience proposal', problem:'Visually impaired individuals lack access to visual social cues in social scenarios. Existing social products pay insufficient attention to non-visual sensory dimensions.', work:'From a sensory anthropology perspective, I designed a social experience centered on olfaction, making scent a bridge for human connection.', outcome:'A complete scent-based social experience design was formed, exploring the potential of non-visual senses in social products.', reflection:'Design should not only serve mainstream senses. When we attend to overlooked sensory dimensions, design can create more inclusive ways of connection.', desc:'A sensory anthropology-driven social experience design using scent as a medium for connection.', media:'thumb', thumb:'mqd60fw6-1-5.jpg', gallery:['mqd60csz-1-0.jpg','mqd60del-1-1.jpg','mqd60e0b-1-2.jpg','mqd60emi-1-3.jpg','mqd60f9o-1-4.jpg','mqd60fw6-1-5.jpg','mqd60ghp-1-6.jpg','mqd60h3l-1-7.jpg','mqd60hq9-1-8.jpg'] },
+          g: { category:'Personal Exploration', title:'Suzhou Shuangta Community Cultural Rebranding', tagline:'From field research to brand implementation, using design to intervene in old community cultural regeneration.', role:'Brand Design, Wayfinding System, Spatial Narrative', tools:'Figma, Field Research, Visual Design', output:'Brand identity system, wayfinding design, spatial experience proposal', problem:'Old communities face dual challenges of cultural memory loss and weakening community identity during urbanization.', work:'I conducted in-depth field research in Suzhou Shuangta community, extracted brand DNA from local culture, and designed a complete brand identity system, wayfinding system, and spatial experience.', outcome:'The project formed a community branding methodology from research to implementation, offering a replicable design path for old community cultural regeneration.', reflection:'Brand design is not only a commercial tool but also a means of social intervention. Designers can be catalysts for community cultural regeneration.', desc:'From field research to brand implementation, using design to intervene in old community cultural regeneration.', media:'thumb', thumb:'mqd6dbzt-OI_IND-MA-Jiamei-Guo-Xiaohe-Wang-Yidi-Zhao-tr.jpg', gallery:['mqd62o92-IND403_Brief3_2250646_00.png','mqd62poj-IND403_Brief3_2250646_01.png','mqd62qaa-IND403_Brief3_2250646_02.png','mqd62r6q-IND403_Brief3_2250646_03.png','mqd62sl7-IND403_Brief3_2250646_04.png','mqd62tiz-IND403_Brief3_2250646_06.png','mqd62ub9-IND403_Brief3_2250646_07.png','mqd62uwx-IND403_Brief3_2250646_08.png','mqd62vpe-IND403_Brief3_2250646_09.png','mqd62wh9-IND403_Brief3_2250646_10.png','mqd62x20-IND403_Brief3_2250646_11.png','mqd62xoa-IND403_Brief3_2250646_12.png','mqd62xzs-IND403_Brief3_2250646_13.png','mqd62ylr-IND403_Brief3_2250646_14.png','mqd62z74-IND403_Brief3_2250646_16.png','mqd62zz9-IND403_Brief3_2250646_17.png','mqd630nt-IND403_Brief3_2250646_19.png','mqd631yw-IND403_Brief3_2250646_20.png','mqd632qt-IND403_Brief3_2250646_21.png','mqd633jn-IND403_Brief3_2250646_22.png','mqd634c5-IND403_Brief3_2250646_23.png','mqd63540-IND403_Brief3_2250646_24.png','mqd63617-IND403_Brief3_2250646_25.png','mqd6cgwj-IND403_Brief3_2250646_00.png','mqd6cgwo-IND403_Brief3_2250646_01.png','mqd6cgwt-IND403_Brief3_2250646_02.png','mqd6cgwz-IND403_Brief3_2250646_03.png','mqd6cgx7-IND403_Brief3_2250646_04.png','mqd6cgxg-IND403_Brief3_2250646_06.png'] },
+          h: { category:'Personal Exploration', title:'AI Travel Planner', tagline:'AI-powered travel planning meets post-interface interaction — a new paradigm.', role:'Product Concept, Interaction Design, AI Exploration', tools:'Figma, AI Tools, Interaction Prototype', output:'AI travel planning concept, post-interface interaction proposal', problem:'Traditional travel planning requires extensive manual search and comparison, leading to long decision chains and fragmented user experience. Post-interface interaction may be the next paradigm shift.', work:'Explored an AI-driven travel planning product concept combining natural post-interface interaction modes, enabling users to plan trips through voice, semantic understanding, and intelligent recommendations.', outcome:'Developed an AI travel planning product concept and post-interface interaction proposal, exploring new possibilities for future interaction design.', reflection:'AI is not just a tool — it can be an agent that understands user intent. Going beyond interfaces does not mean eliminating design, but extending it from screens to conversation, perception, and context.', desc:'AI-powered travel planning meets post-interface interaction — a new paradigm of travel experience.', media:'thumb', thumb:'mqdqh2ue-3.jpg', gallery:['mqdqh2ue-3.jpg','mqdqh4hx-4.jpg','mqdqh5i5-5.jpg','mqdqh6te-7.jpg','mqdqh88c-8.jpg','mqdqh9bm-9.jpg','mqdqhau1-IMG_1001-2.jpeg','mqdqhcap-IMG_1003-2-_1_.jpeg','mqdqhduu-IMG_7530-_1_.jpeg','mqdqlnsa-10.jpg','mqdqnvc8-11.jpg','mqdqnw7m-12.jpg','mqdqnxhh-13.jpg','mqdqnyln-14.jpg','mqdqnzg0-15.jpg'] }
+        }
+      }
+    };
+
+    var currentLang = 'cn';
+    try { var s = localStorage.getItem('portfolio-lang'); if (s === 'en' || s === 'cn') currentLang = s; } catch (_) {}
+
+    function t(key) {
+      var keys = key.split('.'), val = i18n[currentLang];
+      for (var i = 0; i < keys.length; i++) { if (!val) return key; val = val[keys[i]]; }
+      return val != null ? val : key;
+    }
+
+    function applyLanguage() {
+      var els = document.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], key = el.getAttribute('data-i18n'), text = t(key);
+        if (text != null) el.innerHTML = text;
+      }
+      var toggle = document.getElementById('langToggle');
+      if (toggle) toggle.textContent = t('langToggle');
+      document.documentElement.lang = currentLang === 'cn' ? 'zh-CN' : 'en';
+    }
+
+    var projectOrder = { professional: ['a','b','c'], personal: ['d','e','f','g','h'] };
+    var cardCover = { a: null, b: 'mqd4zmvz-png-_1_.png', c: 'mqd5nkyy-2.jpg', d: 'mqd6z6bt-image.png', e: null, f: 'mqd6j632-image.png', g: 'mqd6dbzt-OI_IND-MA-Jiamei-Guo-Xiaohe-Wang-Yidi-Zhao-tr.jpg', h: 'mqdqh2ue-3.jpg' };
+
+    function renderCards() {
+      ['professional','personal'].forEach(function (group) {
+        var container = document.getElementById(group === 'professional' ? 'cardsProfessional' : 'cardsPersonal');
+        if (!container) return;
+        var html = '', ids = projectOrder[group];
+        for (var i = 0; i < ids.length; i++) {
+          var pid = ids[i], p = i18n[currentLang].projects[pid];
+          if (!p) continue;
+          var bgHtml = '';
+          if (pid === 'a') { bgHtml = '<video class="card-media-bg" src="mqd428oc-ai-ide-login.mov" autoplay loop muted playsinline></video>'; }
+          else if (pid === 'b') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          else if (pid === 'c') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          else if (pid === 'd') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          else if (pid === 'e') { bgHtml = '<div style="position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,var(--green-soft) 0%,rgba(221,239,230,0.3) 60%,transparent 100%);pointer-events:none;"><div class="breath-circle"></div></div>'; }
+          else if (pid === 'f') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          else if (pid === 'g') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          else if (pid === 'h') { bgHtml = '<div class="card-media-bg bg-img" style="background-image:url(' + cardCover[pid] + ')"></div>'; }
+          html += '<article class="card" data-project="' + pid + '">';
+          html += bgHtml;
+          html += '<div class="card-body">';
+          html += '<h3 class="card-title">' + escapeHTML(p.title) + '</h3>';
+          html += '<p class="card-desc">' + escapeHTML(p.desc) + '</p>';
+          html += '</div>';
+          html += '</article>';
+        }
+        container.innerHTML = html;
+      });
+      bindCardClicks();
+    }
+
+    function bindCardClicks() {
+      var cards = document.querySelectorAll('.card');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click', function () {
+          var pid = this.getAttribute('data-project');
+          if (pid) openDetail(pid);
+        });
+      }
+    }
+
+    var overlay = document.getElementById('detailOverlay'), detailInner = document.getElementById('detailInner'), body = document.body;
+
+    function openDetail(projectId) {
+      var p = i18n[currentLang].projects[projectId], d = i18n[currentLang].detail;
+      if (!p) return;
+      var isCN = currentLang === 'cn';
+      var html = '';
+      html += '<button class="detail-back" id="detailBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' + escapeHTML(d.back) + '</button>';
+      html += '<p class="detail-category">' + escapeHTML(p.category) + '</p>';
+      html += '<h1 class="detail-title">' + escapeHTML(p.title) + '</h1>';
+      var enP = i18n.en.projects[projectId], cnP = i18n.cn.projects[projectId];
+      var sub = isCN ? (enP && enP.title !== p.title ? enP.title : '') : (cnP && cnP.title !== p.title ? cnP.title : '');
+      if (sub) html += '<p class="detail-title-cn">' + escapeHTML(sub) + '</p>';
+      html += '<p class="detail-tagline">' + escapeHTML(p.tagline) + '</p>';
+      html += '<div class="detail-meta">';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">' + escapeHTML(d.role) + '</p><p class="detail-meta-value">' + escapeHTML(p.role) + '</p></div>';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">' + escapeHTML(d.tools) + '</p><p class="detail-meta-value">' + escapeHTML(p.tools) + '</p></div>';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">' + escapeHTML(d.output) + '</p><p class="detail-meta-value">' + escapeHTML(p.output) + '</p></div>';
+      html += '</div>';
+      html += '<div class="detail-section"><h3>' + escapeHTML(d.problem) + '</h3><p>' + escapeHTML(p.problem) + '</p></div>';
+      html += '<div class="detail-section"><h3>' + escapeHTML(d.myWork) + '</h3><p>' + escapeHTML(p.work) + '</p></div>';
+      html += '<div class="detail-section"><h3>' + escapeHTML(d.outcome) + '</h3><p>' + escapeHTML(p.outcome) + '</p></div>';
+      html += '<div class="detail-section"><h3>' + escapeHTML(d.reflection) + '</h3><p>' + escapeHTML(p.reflection) + '</p></div>';
+
+      /* Innovation for TEAM WANG */
+      if (projectId === 'd') {
+        html += '<div class="detail-innovation"><h3>' + escapeHTML(d.innovation) + '</h3>';
+        html += '<div class="innovation-item"><h4>' + escapeHTML(d.innovation1Title) + '</h4><p>' + escapeHTML(d.innovation1Desc) + '</p></div>';
+        html += '<div class="innovation-item"><h4>' + escapeHTML(d.innovation2Title) + '</h4><p>' + escapeHTML(d.innovation2Desc) + '</p></div>';
+        html += '<div class="innovation-item"><h4>' + escapeHTML(d.innovation3Title) + '</h4><p>' + escapeHTML(d.innovation3Desc) + '</p></div>';
+        html += '</div>';
+      }
+
+      /* Media area */
+      var mediaType = p.media || '';
+      if (mediaType === 'video') {
+        html += '<div class="detail-media-large"><video class="detail-video" src="mqd428oc-ai-ide-login.mov" controls autoplay loop muted playsinline></video></div>';
+        if (p.thumbs && p.thumbs.length) {
+          html += '<p class="gallery-label">' + escapeHTML(d.galleryLabel) + '</p>';
+          html += '<div class="detail-gallery">';
+          for (var ti = 0; ti < p.thumbs.length; ti++) {
+            html += '<img src="' + p.thumbs[ti] + '" alt="Screenshot ' + (ti+1) + '" loading="lazy" />';
+          }
+          html += '</div>';
+        }
+      } else if (mediaType === 'iframe') {
+        html += '<p class="gallery-label">' + escapeHTML(d.tokenHubLabel) + '</p>';
+        html += '<div class="iframe-scaler" id="iframeScaler" style="width:100%;"><iframe src="mqd3qupe-tokenhub-kanban-share.html" width="1440" height="900" style="display:block;"></iframe></div>';
+        if (p.thumbs && p.thumbs.length) {
+          html += '<p class="gallery-label">' + escapeHTML(d.galleryLabel) + '</p>';
+          html += '<div class="detail-gallery">';
+          for (var ti2 = 0; ti2 < p.thumbs.length; ti2++) {
+            html += '<img src="' + p.thumbs[ti2] + '" alt="Platform ' + (ti2+1) + '" loading="lazy" />';
+          }
+          html += '</div>';
+        }
+      } else if (mediaType === 'pdf-dual') {
+        var pdf1 = 'mqd5o2vv-2023-new-Guo-Jiamei-HMI-DESIGN-PROJECT.pdf', pdf2 = 'mqd5o8xh-HMI-Research-Report-2.pdf';
+        html += '<div class="pdf-viewer"><div class="pdf-tabs"><button class="pdf-tab active" data-pdf="' + pdf1 + '" id="pdfTab1">' + escapeHTML(d.pdfTab1) + '</button><button class="pdf-tab" data-pdf="' + pdf2 + '" id="pdfTab2">' + escapeHTML(d.pdfTab2) + '</button></div>';
+        html += '<div class="pdf-toolbar"><button onclick="document.querySelector(\'.pdf-zoom-in\').click()">+</button><button onclick="document.querySelector(\'.pdf-zoom-out\').click()">&minus;</button><button onclick="document.querySelector(\'.pdf-zoom-reset\').click()">Reset</button><span class="pdf-zoom-label" id="pdfZoomLabel">100%</span><a class="pdf-toolbar-btn pdf-open" id="pdfOpenLink" href="' + pdf1 + '" target="_blank" rel="noopener">' + escapeHTML(d.openNew) + ' ↗</a></div>';
+        html += '<div class="pdf-iframe-wrap" id="pdfWrap"><div class="pdf-watermark"><span>jiamei guo</span></div><iframe src="' + pdf1 + '#toolbar=0" id="pdfIframe" style="height:700px;"></iframe></div></div>';
+      } else if (mediaType === 'gallery') {
+        if (p.gallery && p.gallery.length) {
+          html += '<p class="gallery-label">' + escapeHTML(d.galleryLabel) + '</p>';
+          html += '<div class="detail-gallery">';
+          for (var gi = 0; gi < p.gallery.length; gi++) {
+            html += '<img src="' + p.gallery[gi] + '" alt="Gallery ' + (gi+1) + '" loading="lazy" />';
+          }
+          html += '</div>';
+        }
+      } else if (mediaType === 'thumb') {
+        if (p.gallery && p.gallery.length) {
+          html += '<p class="gallery-label">' + escapeHTML(d.galleryLabel) + '</p>';
+          html += '<div class="detail-gallery">';
+          for (var gi2 = 0; gi2 < p.gallery.length; gi2++) {
+            html += '<img src="' + p.gallery[gi2] + '" alt="Image ' + (gi2+1) + '" loading="lazy" />';
+          }
+          html += '</div>';
+        }
+      } else if (mediaType === 'breathing') {
+        html += '<div class="breath-circle-wrap"><div class="breath-circle"></div></div>';
+        /* Background */
+        if (p.background) {
+          html += '<div class="detail-section"><h3>' + escapeHTML(d.breathBackground) + '</h3><p>' + escapeHTML(p.background) + '</p></div>';
+        }
+        /* Design concept */
+        if (p.designConcept) {
+          html += '<div class="detail-section"><h3>' + escapeHTML(d.breathDesignConcept) + '</h3><p>' + escapeHTML(p.designConcept) + '</p></div>';
+        }
+        /* Breathing patterns */
+        if (p.breathingPatterns && p.breathingPatterns.length) {
+          html += '<div class="detail-section"><h3>' + escapeHTML(d.breathPatterns) + '</h3>';
+          html += '<div class="breath-patterns">';
+          for (var bpi = 0; bpi < p.breathingPatterns.length; bpi++) {
+            html += '<div class="breath-pattern-item"><span class="bp-name">' + escapeHTML(p.breathingPatterns[bpi].name) + '</span><span class="bp-desc">' + escapeHTML(p.breathingPatterns[bpi].desc) + '</span></div>';
+          }
+          html += '</div></div>';
+        }
+        /* Reference image */
+        if (p.refImage) {
+          html += '<p class="gallery-label">' + escapeHTML(d.breathRefImage) + '</p>';
+          html += '<div class="breath-ref-img-wrap"><img src="' + p.refImage + '" alt="Breathing reference" class="breath-ref-img" /></div>';
+        }
+        /* Reference gif */
+        if (p.refGif) {
+          html += '<p class="gallery-label">' + escapeHTML(d.breathRefGif) + '</p>';
+          html += '<div class="breath-ref-img-wrap"><img src="' + p.refGif + '" alt="Breathing animation" class="breath-ref-img" /></div>';
+        }
+      }
+
+      detailInner.innerHTML = html;
+      overlay.classList.add('open');
+      body.style.overflow = 'hidden';
+      overlay.scrollTop = 0;
+      document.getElementById('detailBack').addEventListener('click', closeDetail);
+
+      /* Scale iframe to fit */
+      setTimeout(function () {
+        var scaler = document.getElementById('iframeScaler');
+        if (scaler) {
+          var scaleW = scaler.clientWidth / 1440;
+          var s = Math.min(1, scaleW);
+          scaler.style.height = (900 * s + 24) + 'px';
+          var ifr = scaler.querySelector('iframe');
+          if (ifr) ifr.style.transform = 'scale(' + s + ')';
+        }
+      }, 100);
+
+      /* PDF tab switching */
+      var pdfTabs = document.querySelectorAll('.pdf-tab');
+      for (var pti = 0; pti < pdfTabs.length; pti++) {
+        pdfTabs[pti].addEventListener('click', function () {
+          var pdfUrl = this.getAttribute('data-pdf');
+          document.querySelectorAll('.pdf-tab').forEach(function (t) { t.classList.remove('active'); });
+          this.classList.add('active');
+          var pdfIframe = document.getElementById('pdfIframe');
+          if (pdfIframe) { pdfIframe.src = pdfUrl + '#toolbar=0'; pdfIframe.height = '700'; }
+          var pdfOpenLink = document.getElementById('pdfOpenLink');
+          if (pdfOpenLink) pdfOpenLink.href = pdfUrl;
+          var pdfZoomLabel = document.getElementById('pdfZoomLabel');
+          if (pdfZoomLabel) pdfZoomLabel.textContent = '100%';
+        });
+      }
+
+      /* PDF zoom */
+      var pdfZoom = 100;
+      window._pdfZoomIn = function () {
+        if (pdfZoom >= 300) return; pdfZoom += 25;
+        var pdfIframe = document.getElementById('pdfIframe');
+        if (pdfIframe) pdfIframe.style.height = (700 * pdfZoom / 100) + 'px';
+        var pdfZoomLabel = document.getElementById('pdfZoomLabel');
+        if (pdfZoomLabel) pdfZoomLabel.textContent = pdfZoom + '%';
+      };
+      window._pdfZoomOut = function () {
+        if (pdfZoom <= 50) return; pdfZoom -= 25;
+        var pdfIframe = document.getElementById('pdfIframe');
+        if (pdfIframe) pdfIframe.style.height = (700 * pdfZoom / 100) + 'px';
+        var pdfZoomLabel = document.getElementById('pdfZoomLabel');
+        if (pdfZoomLabel) pdfZoomLabel.textContent = pdfZoom + '%';
+      };
+      window._pdfZoomReset = function () {
+        pdfZoom = 100;
+        var pdfIframe = document.getElementById('pdfIframe');
+        if (pdfIframe) pdfIframe.style.height = '700px';
+        var pdfZoomLabel = document.getElementById('pdfZoomLabel');
+        if (pdfZoomLabel) pdfZoomLabel.textContent = '100%';
+      };
+
+      /* Prevent right-click on PDF */
+      var pdfWrap = document.getElementById('pdfWrap');
+      if (pdfWrap) { pdfWrap.addEventListener('contextmenu', function (e) { e.preventDefault(); }); }
+    }
+
+    function closeDetail() {
+      overlay.classList.remove('open');
+      body.style.overflow = '';
+      var target = document.getElementById(currentTarget || 'work-ai');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    var currentTarget = null;
+
+    function escapeHTML(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    /* Lang toggle */
+    document.getElementById('langToggle').addEventListener('click', function () {
+      currentLang = currentLang === 'cn' ? 'en' : 'cn';
+      try { localStorage.setItem('portfolio-lang', currentLang); } catch (_) {}
+      applyLanguage();
+      renderCards();
+    });
+
+    /* Photo cycle */
+    var photos = document.querySelectorAll('.hero-photo'), photoIdx = 0;
+    function cyclePhotos() {
+      var order = [[3,2,1],[1,3,2],[2,1,3]];
+      var z = order[photoIdx % 3];
+      for (var i = 0; i < photos.length; i++) { photos[i].style.zIndex = z[i]; }
+      photoIdx++;
+    }
+    setInterval(cyclePhotos, 3000);
+
+    /* Nav scroll */
+    var scrollLinks = document.querySelectorAll('[data-scroll]');
+    for (var i = 0; i < scrollLinks.length; i++) {
+      scrollLinks[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        var href = this.getAttribute('href');
+        var target = href ? document.querySelector(href) : null;
+        if (target) {
+          currentTarget = href.replace('#', '');
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    /* Nav + video scroll */
+    var nav = document.getElementById('nav'), ticking = false, heroBgVideo = document.getElementById('heroBgVideo');
+    function updateNav() {
+      if (window.scrollY > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+      if (heroBgVideo) {
+        var progress = Math.min(window.scrollY / window.innerHeight, 1);
+        heroBgVideo.style.transform = 'scale(' + (1 + progress * 0.28) + ')';
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(updateNav); ticking = true; } });
+
+    /* Escape to close detail */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeDetail();
+    });
+
+    /* Resize iframe scaler */
+    window.addEventListener('resize', function () {
+      var scaler = document.getElementById('iframeScaler');
+      if (scaler) {
+        var scaleW = scaler.clientWidth / 1440, s = Math.min(1, scaleW);
+        scaler.style.height = (900 * s + 24) + 'px';
+        var ifr = scaler.querySelector('iframe');
+        if (ifr) ifr.style.transform = 'scale(' + s + ')';
+      }
+    });
+
+    applyLanguage();
+    renderCards();
+  })();
+  </script>
+</body>
+</html>
