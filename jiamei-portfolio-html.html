@@ -1,0 +1,1202 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jiamei Guo — UI/UE Designer</title>
+  <style>
+    /* =============================================================
+       CSS VARIABLES
+       ============================================================= */
+    :root {
+      --bg: #F7F8FA;
+      --bg-alt: #F5F5F7;
+      --fg: #111111;
+      --muted: #6E6E73;
+      --card-bg: rgba(255, 255, 255, 0.72);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --blue-soft: #DDEBFF;
+      --purple-soft: #E7DDFB;
+      --green-soft: #DDEFE6;
+      --warm: #EFE7DC;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+      --font-mono: 'SF Mono', ui-monospace, 'Menlo', 'Monaco', monospace;
+      --nav-h: 52px;
+    }
+
+    /* =============================================================
+       RESET
+       ============================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--fg);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    /* =============================================================
+       NAVIGATION
+       ============================================================= */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(247, 248, 250, 0.78);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .nav.scrolled {
+      border-bottom-color: rgba(0, 0, 0, 0.06);
+      background: rgba(247, 248, 250, 0.88);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-lang {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      padding: 4px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 6px;
+      cursor: default;
+      user-select: none;
+    }
+
+    /* =============================================================
+       SECTIONS (shared)
+       ============================================================= */
+    .section {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 100px 40px;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.12;
+      color: var(--fg);
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 600px;
+    }
+
+    /* =============================================================
+       HERO
+       ============================================================= */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+      max-width: 1040px;
+      margin: 0 auto;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 6.5vw, 68px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      color: var(--fg);
+    }
+    .hero-role {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      margin-top: -8px;
+    }
+    .hero-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 440px;
+    }
+    .hero-sub-cn {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      opacity: 0.8;
+    }
+    .hero-slogan {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--fg);
+      letter-spacing: 0.01em;
+      margin-top: 4px;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 26px;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      border-radius: 100px;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--fg);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--fg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover {
+      box-shadow: var(--shadow-md);
+      background: #fff;
+    }
+
+    /* Hero visual — floating glass composition */
+    .hero-visual {
+      position: relative;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .float-card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      animation: float 6s ease-in-out infinite;
+    }
+    .float-card.c1 {
+      width: 260px; height: 180px;
+      top: 60px; left: 20px;
+      --r: -4deg;
+      animation-delay: 0s;
+    }
+    .float-card.c2 {
+      width: 200px; height: 140px;
+      top: 180px; right: 10px;
+      --r: 5deg;
+      animation-delay: -2s;
+    }
+    .float-card.c3 {
+      width: 170px; height: 110px;
+      bottom: 90px; left: 50px;
+      --r: -2deg;
+      animation-delay: -4s;
+    }
+    .float-dot {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 5s ease-in-out infinite;
+    }
+    .float-dot.d1 {
+      width: 64px; height: 64px;
+      background: radial-gradient(circle, var(--blue-soft), transparent);
+      top: 40px; right: 60px;
+      animation-delay: -1.5s;
+    }
+    .float-dot.d2 {
+      width: 48px; height: 48px;
+      background: radial-gradient(circle, var(--purple-soft), transparent);
+      bottom: 130px; right: 100px;
+      animation-delay: -3s;
+    }
+    /* Grid lines hint */
+    .grid-hint {
+      position: absolute;
+      inset: 20px;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      border-radius: var(--radius-lg);
+      pointer-events: none;
+    }
+    /* Cat placeholder */
+    .cat {
+      position: absolute;
+      bottom: 56px;
+      right: 44px;
+      width: 44px;
+      height: 44px;
+      z-index: 2;
+      animation: float 5.5s ease-in-out infinite;
+      animation-delay: -1s;
+    }
+    .cat-body {
+      width: 36px; height: 28px;
+      background: #fff;
+      border-radius: 18px 18px 14px 14px;
+      position: absolute;
+      bottom: 0; left: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .cat-ear {
+      position: absolute;
+      width: 0; height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 12px solid #fff;
+      filter: drop-shadow(0 -1px 2px rgba(0,0,0,0.03));
+    }
+    .cat-ear.left { top: 0; left: 4px; }
+    .cat-ear.right { top: 0; right: 4px; }
+    .cat-tail {
+      position: absolute;
+      bottom: 10px;
+      right: -8px;
+      width: 16px;
+      height: 20px;
+      border: 3px solid #fff;
+      border-left: none;
+      border-radius: 0 14px 14px 0;
+      box-shadow: 1px 0 3px rgba(0,0,0,0.04);
+    }
+    .cat-eye {
+      position: absolute;
+      width: 4px; height: 5px;
+      background: var(--fg);
+      border-radius: 50%;
+      top: 5px;
+    }
+    .cat-eye.left { left: 9px; }
+    .cat-eye.right { right: 9px; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(var(--r, 0deg)); }
+      50% { transform: translateY(-14px) rotate(var(--r, 0deg)); }
+    }
+
+    /* =============================================================
+       WORKS SECTION
+       ============================================================= */
+    .works {}
+    .works-subhead {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 48px;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .card-category {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+      color: var(--fg);
+    }
+    .card-title-cn {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: -8px;
+    }
+    .card-desc {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+      flex: 1;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.04);
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+    .card-media {
+      /* Placeholder: replace with real video/image */
+      height: 120px;
+      border-radius: var(--radius-sm);
+      background: rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-media.breathing-placeholder {
+      background: radial-gradient(circle, var(--green-soft) 0%, rgba(221,239,230,0.3) 60%, transparent 100%);
+    }
+    .breath-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(150, 190, 170, 0.5);
+      animation: breathe 4s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.8); opacity: 0.85; }
+    }
+    .card .btn {
+      width: 100%;
+      margin-top: auto;
+    }
+
+    /* =============================================================
+       THINKING
+       ============================================================= */
+    .thinking {}
+    .think-intro {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 680px;
+      margin-bottom: 12px;
+    }
+    .think-intro-cn {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      opacity: 0.75;
+      margin-bottom: 36px;
+      max-width: 680px;
+    }
+    .insight-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .insight-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .insight-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .insight-icon.efficiency { background: var(--blue-soft); }
+    .insight-icon.system { background: var(--purple-soft); }
+    .insight-icon.sensitivity { background: var(--green-soft); }
+    .insight-label {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--fg);
+      margin-bottom: 8px;
+    }
+    .insight-desc {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* =============================================================
+       ABOUT
+       ============================================================= */
+    .about {}
+    .about-text {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 680px;
+      margin-bottom: 12px;
+    }
+    .about-text-cn {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      opacity: 0.75;
+      max-width: 680px;
+      margin-bottom: 24px;
+    }
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .about-tags .tag {
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+
+    /* =============================================================
+       CONTACT
+       ============================================================= */
+    .contact {}
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 16px;
+      color: var(--fg);
+    }
+    .contact-info span {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .contact .btn {
+      margin-top: 12px;
+      width: fit-content;
+    }
+
+    /* =============================================================
+       FOOTER
+       ============================================================= */
+    .footer {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 40px 48px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* =============================================================
+       DETAIL OVERLAY
+       ============================================================= */
+    .detail-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--bg);
+      overflow-y: auto;
+      display: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .detail-overlay.open {
+      display: block;
+    }
+    .detail-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
+    .detail-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 36px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .detail-back:hover { color: var(--fg); }
+    .detail-back svg { width: 16px; height: 16px; }
+    .detail-category {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .detail-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+    .detail-title-cn {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .detail-tagline {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 28px;
+    }
+    .detail-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .detail-meta-block {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+    }
+    .detail-meta-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .detail-meta-value {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--fg);
+    }
+    .detail-section {
+      margin-bottom: 32px;
+    }
+    .detail-section h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--fg);
+      margin-bottom: 8px;
+    }
+    .detail-section p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .detail-media-large {
+      /* Placeholder: replace with real video embed */
+      width: 100%;
+      height: 340px;
+      border-radius: var(--radius-md);
+      background: rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+    }
+    .detail-pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--muted);
+      background: var(--card-bg);
+      transition: border-color 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .detail-pdf-btn:hover { border-color: rgba(0,0,0,0.18); color: var(--fg); }
+
+    /* =============================================================
+       RESPONSIVE — Tablet
+       ============================================================= */
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        min-height: auto;
+        padding-top: 100px;
+        padding-bottom: 60px;
+      }
+      .hero-visual { height: 360px; }
+      .float-card.c1 { width: 200px; height: 140px; top: 30px; left: 0; }
+      .float-card.c2 { width: 160px; height: 110px; top: 140px; right: 30px; }
+      .float-card.c3 { width: 140px; height: 90px; bottom: 40px; left: 60px; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+      .insight-cards { grid-template-columns: repeat(2, 1fr); }
+      .insight-cards .insight-card:last-child { grid-column: span 2; }
+    }
+
+    /* =============================================================
+       RESPONSIVE — Mobile
+       ============================================================= */
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 12px; }
+      .nav-lang { display: none; }
+      .section { padding: 72px 20px; }
+      .hero {
+        padding: 100px 20px 48px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .hero-visual { height: 280px; }
+      .float-card.c1 { width: 160px; height: 110px; top: 20px; left: 0; }
+      .float-card.c2 { width: 130px; height: 90px; top: 110px; right: 10px; }
+      .float-card.c3 { display: none; }
+      .float-dot.d1 { width: 44px; height: 44px; top: 20px; right: 30px; }
+      .float-dot.d2 { display: none; }
+      .cat { bottom: 30px; right: 20px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .insight-cards { grid-template-columns: 1fr; }
+      .insight-cards .insight-card:last-child { grid-column: span 1; }
+      .detail-meta { grid-template-columns: 1fr; }
+      .detail-inner { padding: 60px 20px 80px; }
+      .hero-btns { flex-direction: column; align-items: flex-start; }
+      .hero-name { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===========================================================
+       NAVIGATION
+       =========================================================== -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Jiamei Guo</a>
+    <ul class="nav-links">
+      <li><a href="#works" data-scroll>Work</a></li>
+      <li><a href="#thinking" data-scroll>Thinking</a></li>
+      <li><a href="#about" data-scroll>About</a></li>
+      <li><a href="#contact" data-scroll>Contact</a></li>
+    </ul>
+    <span class="nav-lang">EN / CN</span>
+  </nav>
+
+  <!-- ===========================================================
+       HERO
+       =========================================================== -->
+  <section class="hero" id="hero">
+    <div class="hero-text">
+      <h1 class="hero-name">Jiamei Guo</h1>
+      <p class="hero-role">UI/UE Designer</p>
+      <p class="hero-sub">Exploring AI-native workflows to expand design from interface and interaction to insight, brand communication, and implementation.</p>
+      <p class="hero-sub-cn">探索 AI-Native 工作方式，将设计从界面与交互延展到用户洞察、品牌表达与落地实现。</p>
+      <p class="hero-slogan">Amour Fati. Keep exploring and learning.</p>
+      <div class="hero-btns">
+        <a href="#works" class="btn btn-primary" data-scroll>View Works</a>
+        <a href="#contact" class="btn btn-secondary" data-scroll>Contact Me</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="grid-hint"></div>
+      <div class="float-card c1"></div>
+      <div class="float-card c2"></div>
+      <div class="float-card c3"></div>
+      <div class="float-dot d1"></div>
+      <div class="float-dot d2"></div>
+      <!-- CSS Cat placeholder — personal memory point -->
+      <div class="cat">
+        <div class="cat-ear left"></div>
+        <div class="cat-ear right"></div>
+        <div class="cat-body"></div>
+        <div class="cat-eye left"></div>
+        <div class="cat-eye right"></div>
+        <div class="cat-tail"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       SELECTED WORKS
+       =========================================================== -->
+  <section class="section works" id="works">
+    <p class="section-label">Selected Works</p>
+    <h2 class="section-title">AI-Native Design<br>in Practice</h2>
+    <p class="section-desc">A collection of professional works and personal explorations across enterprise AI tools, dashboards, HMI, brand experience, and healing digital products.</p>
+
+    <p class="works-subhead">Professional Works</p>
+    <div class="card-grid">
+
+      <!-- Project A -->
+      <article class="card" data-project="a">
+        <span class="card-category">Professional Work</span>
+        <h3 class="card-title">China Mobile Enterprise AI IDE Design Transformation</h3>
+        <p class="card-title-cn">中国移动企业 AI IDE 设计变革与提效</p>
+        <p class="card-desc">Exploring how AI-native workflows, design systems, and coding constraints improve enterprise design-to-development efficiency.</p>
+        <div class="card-tags">
+          <span class="tag">AI Native</span>
+          <span class="tag">Design System</span>
+          <span class="tag">Enterprise IDE</span>
+          <span class="tag">Implementation</span>
+        </div>
+        <!-- Video + PDF placeholder — replace src with real media -->
+        <div class="card-media">Video Placeholder</div>
+        <button class="btn btn-secondary open-detail" data-project="a">View Case</button>
+      </article>
+
+      <!-- Project B -->
+      <article class="card" data-project="b">
+        <span class="card-category">Professional Work</span>
+        <h3 class="card-title">Enterprise Dashboard Built with AI-Native Workflow</h3>
+        <p class="card-title-cn">中国移动企业 Dashboard AI Native 驱动实现</p>
+        <p class="card-desc">Built an enterprise dashboard prototype from requirement alignment to interactive implementation within hours.</p>
+        <div class="card-tags">
+          <span class="tag">Dashboard</span>
+          <span class="tag">AI Workflow</span>
+          <span class="tag">Enterprise Design</span>
+          <span class="tag">Interaction</span>
+        </div>
+        <!-- GIF video placeholder — replace with real media -->
+        <div class="card-media">GIF Video Placeholder</div>
+        <button class="btn btn-secondary open-detail" data-project="b">View Case</button>
+      </article>
+
+      <!-- Project C -->
+      <article class="card" data-project="c">
+        <span class="card-category">Professional Work</span>
+        <h3 class="card-title">Apitiv Concept HMI Interaction Innovation</h3>
+        <p class="card-title-cn">Apitiv 概念 HMI 交互方式革新</p>
+        <p class="card-desc">A future-oriented HMI concept exploring gesture interaction, emotional companionship, scent experience, and holographic communication.</p>
+        <div class="card-tags">
+          <span class="tag">HMI</span>
+          <span class="tag">Mobility</span>
+          <span class="tag">Gesture</span>
+          <span class="tag">Emotional Design</span>
+        </div>
+        <!-- Video + PDF placeholder — replace with real media -->
+        <div class="card-media">Video + PDF Placeholder</div>
+        <button class="btn btn-secondary open-detail" data-project="c">View Case</button>
+      </article>
+    </div>
+
+    <p class="works-subhead">Personal Explorations</p>
+    <div class="card-grid">
+
+      <!-- Project D -->
+      <article class="card" data-project="d">
+        <span class="card-category">Personal Exploration</span>
+        <h3 class="card-title">TEAM WANG Brand Experience Concept</h3>
+        <p class="card-title-cn">TEAM WANG 品牌线下体验与官网概念设计</p>
+        <p class="card-desc">A fan-driven brand experience concept combining offline event design, cultural storytelling, interaction, and website presentation.</p>
+        <div class="card-tags">
+          <span class="tag">Brand</span>
+          <span class="tag">Offline Experience</span>
+          <span class="tag">Website</span>
+          <span class="tag">Culture</span>
+        </div>
+        <!-- Image gallery + PDF placeholder — replace with real media -->
+        <div class="card-media">Image Gallery + PDF Placeholder</div>
+        <button class="btn btn-secondary open-detail" data-project="d">View Case</button>
+      </article>
+
+      <!-- Project E -->
+      <article class="card" data-project="e">
+        <span class="card-category">Personal Exploration</span>
+        <h3 class="card-title">Healing Breath: A Calming Breathing Experience</h3>
+        <p class="card-title-cn">疗愈呼吸：随时给自己喘口气的体验设计</p>
+        <p class="card-desc">A calming online and offline breathing experience exploring nature, attention, emotion, and gentle technology.</p>
+        <div class="card-tags">
+          <span class="tag">Healing</span>
+          <span class="tag">Apple Vision</span>
+          <span class="tag">Breathing</span>
+          <span class="tag">Human-centered AI</span>
+        </div>
+        <!-- Breathing animation placeholder — replace with real media -->
+        <div class="card-media breathing-placeholder">
+          <div class="breath-circle"></div>
+        </div>
+        <button class="btn btn-secondary open-detail" data-project="e">View Case</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       THINKING
+       =========================================================== -->
+  <section class="section thinking" id="thinking">
+    <p class="section-label">Thinking</p>
+    <h2 class="section-title">From AI Efficiency<br>to Human Sensitivity</h2>
+    <p class="think-intro">In enterprise scenarios, I use AI to improve efficiency, accelerate design iteration, and connect design with implementation. But I also care about the other side of AI: anxiety, distraction, weakened judgment, and the lack of emotional interaction. My long-term design direction is to build AI experiences that are not only powerful, but also gentle, understandable, and human-centered.</p>
+    <p class="think-intro-cn">在企业场景中，我使用 AI 提升效率、加速设计迭代，并连接设计与实现。但我也关注 AI 的另一面：焦虑、分心、判断力外包，以及情感化交互的缺失。我的长期设计方向，是创造不仅高效强大，也更温和、可理解、以人为中心的 AI 体验。</p>
+
+    <div class="insight-cards">
+      <div class="insight-card">
+        <div class="insight-icon efficiency">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <p class="insight-label">Efficiency</p>
+        <p class="insight-desc">AI-native workflows for faster design iteration, from concept to interactive prototype.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon system">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <p class="insight-label">System</p>
+        <p class="insight-desc">Design systems and implementation constraints that bridge design intent with engineering reality.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon sensitivity">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <p class="insight-label">Sensitivity</p>
+        <p class="insight-desc">Gentle, human-centered experiences that respect attention, emotion, and wellbeing in the AI era.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       ABOUT
+       =========================================================== -->
+  <section class="section about" id="about">
+    <p class="section-label">About</p>
+    <h2 class="section-title">Who am I</h2>
+    <p class="about-text">I am a UI/UE designer exploring AI-native workflows to expand design from interface and interaction to user insight, brand communication, operation visuals, and product implementation.</p>
+    <p class="about-text">Outside design, I love photography, hiking, documenting everyday life, and spending time with my white, greedy, slightly overweight cat.</p>
+    <p class="about-text-cn">我是一名 UI/UE 设计师，正在探索 AI-Native 工作方式，将设计从界面与交互延展到用户洞察、品牌表达、运营宣传与产品落地。设计之外，我喜欢摄影、户外徒步、记录生活，也喜欢小动物，有一只白色、贪吃、微胖的猫。</p>
+    <div class="about-tags">
+      <span class="tag">Photography</span>
+      <span class="tag">Hiking</span>
+      <span class="tag">Cat Lover</span>
+      <span class="tag">Calm Technology</span>
+      <span class="tag">Keep Learning</span>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       CONTACT
+       =========================================================== -->
+  <section class="section contact" id="contact">
+    <p class="section-label">Contact</p>
+    <h2 class="section-title">Let's connect</h2>
+    <div class="contact-info">
+      <p>Email: <span>janeguo0000@163.com</span></p>
+      <p>Resume:
+        <!-- PDF placeholder — replace href with real PDF path -->
+        <a href="#" class="btn btn-secondary" style="display:inline-flex;margin-left:8px;padding:7px 18px;font-size:13px;">Download PDF</a>
+      </p>
+      <p>Portfolio: Current website</p>
+    </div>
+  </section>
+
+  <!-- ===========================================================
+       FOOTER
+       =========================================================== -->
+  <footer class="footer">
+    <p>&copy; 2026 Jiamei Guo. Designed and built with AI-native workflow.</p>
+  </footer>
+
+  <!-- ===========================================================
+       DETAIL OVERLAY
+       =========================================================== -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-inner" id="detailInner">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       SCRIPTS
+       =========================================================== -->
+  <script>
+  (function () {
+
+    /* ===========================================================
+       PROJECT DATA
+       Replace placeholder copy with real content as needed.
+       =========================================================== */
+    var projects = {
+      a: {
+        category: 'Professional Work',
+        title: 'China Mobile Enterprise AI IDE Design Transformation',
+        titleCn: '中国移动企业 AI IDE 设计变革与提效',
+        tagline: 'Exploring how AI-native workflows, design systems, and coding constraints improve enterprise design-to-development efficiency.',
+        role: 'UI/UE Design, AI-assisted Implementation, Design System Thinking',
+        tools: 'Figma, AI Coding Tools, HTML/CSS, Prompt Library',
+        output: 'Login page prototype, design system exploration, development constraints, operation visuals',
+        problem: 'Enterprise AI tools need more efficient and consistent design-to-development workflows. Traditional design delivery often depends on repeated communication, static screens, and disconnected implementation.',
+        work: 'I explored an AI-native workflow by designing and implementing interface prototypes, building reusable design rules, and translating design experience into prompts and development constraints.',
+        outcome: 'The workflow improved the speed of requirement alignment, design exploration, and interactive implementation. It also helped shift design delivery from static visuals to executable experience prototypes.',
+        reflection: 'AI improves efficiency, but designers still need to keep judgment, emotional sensitivity, and product thinking. My goal is to use AI as a collaborator, not as a replacement for design thinking.'
+      },
+      b: {
+        category: 'Professional Work',
+        title: 'Enterprise Dashboard Built with AI-Native Workflow',
+        titleCn: '中国移动企业 Dashboard AI Native 驱动实现',
+        tagline: 'Built an enterprise dashboard prototype from requirement alignment to interactive implementation within hours.',
+        role: 'Dashboard UI Design, Interaction Prototype, AI-assisted Implementation',
+        tools: 'Figma, HTML/CSS, AI Coding Workflow',
+        output: 'Operational dashboard prototype and GIF demo',
+        problem: 'Enterprise teams need dashboards that can quickly communicate operational status, efficiency trends, and token usage data.',
+        work: 'I completed the dashboard structure, visual direction, and interactive prototype under enterprise design guidelines.',
+        outcome: 'The design process moved from requirement alignment to visual solution in around 1 hour, and from layout to interactive implementation in around 2 hours.',
+        reflection: 'Dashboard design is not just about charts. It is about making complex data readable, actionable, and aligned with business decisions.'
+      },
+      c: {
+        category: 'Professional Work',
+        title: 'Apitiv Concept HMI Interaction Innovation',
+        titleCn: 'Apitiv 概念 HMI 交互方式革新',
+        tagline: 'A future-oriented HMI concept exploring gesture interaction, emotional companionship, scent experience, and holographic communication.',
+        role: 'HMI Concept Design, Interaction Research, Video Storytelling',
+        tools: 'Figma, Video Prototype, Concept Research',
+        output: 'Research report, concept interaction video, feature demo',
+        problem: 'Future mobility experiences should not only focus on driving efficiency. They can also provide emotional value, companionship, and new interaction possibilities.',
+        work: 'I explored gesture interaction, emotional companionship, scent experience, and holographic communication as future HMI directions.',
+        outcome: 'The project formed a future-oriented concept system and a demo video to communicate key interaction ideas.',
+        reflection: 'HMI design can move beyond functional control. It can become a more emotional, ambient, and human-centered experience layer.'
+      },
+      d: {
+        category: 'Personal Exploration',
+        title: 'TEAM WANG Brand Experience Concept',
+        titleCn: 'TEAM WANG 品牌线下体验与官网概念设计',
+        tagline: 'A fan-driven brand experience concept combining offline event design, cultural storytelling, interaction, and website presentation.',
+        role: 'Brand Experience Design, Offline Activity Concept, Website Concept',
+        tools: 'Figma, Visual Design, Brand Research',
+        output: 'Offline experience proposal, website design concept, visual gallery',
+        problem: 'Early brand communities need more than visual identity. They need cultural storytelling, offline participation, and emotional connection.',
+        work: 'I created a fan-driven brand experience concept that combines offline activity, cultural interaction, and website presentation.',
+        outcome: 'The project formed a complete concept from brand understanding to offline experience and digital communication.',
+        reflection: 'Brand design is not only about style. It is about creating a space where users can feel belonging, emotion, and participation.'
+      },
+      e: {
+        category: 'Personal Exploration',
+        title: 'Healing Breath: A Calming Breathing Experience',
+        titleCn: '疗愈呼吸：随时给自己喘口气的体验设计',
+        tagline: 'A calming online and offline breathing experience exploring nature, attention, emotion, and gentle technology.',
+        role: 'Product Concept, Interaction Design, Healing Experience Design',
+        tools: 'Figma, CSS Animation, Apple Vision-style Interface Concept',
+        output: 'Breathing animation, online experience concept, offline nature-guided concept',
+        problem: 'In the AI era, people face anxiety, distraction, and mental fatigue. Some users also struggle to slow down and truly enter natural environments.',
+        work: 'I designed an online breathing experience and an offline nature-guided concept using calm visuals, breathing rhythm, and Apple Vision-inspired spatial guidance.',
+        outcome: 'The concept provides a gentle way for users to pause, breathe, and reconnect with their body, attention, and surroundings.',
+        reflection: 'Good technology should not always ask users to do more. Sometimes it should help users slow down and notice what is already around them.'
+      }
+    };
+
+    /* ===========================================================
+       DETAIL OVERLAY
+       =========================================================== */
+    var overlay = document.getElementById('detailOverlay');
+    var detailInner = document.getElementById('detailInner');
+    var body = document.body;
+
+    function openDetail(projectId) {
+      var p = projects[projectId];
+      if (!p) return;
+
+      var html = '';
+      html += '<button class="detail-back" id="detailBack">';
+      html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+      html += 'Back to Works</button>';
+      html += '<p class="detail-category">' + escapeHTML(p.category) + '</p>';
+      html += '<h1 class="detail-title">' + escapeHTML(p.title) + '</h1>';
+      html += '<p class="detail-title-cn">' + escapeHTML(p.titleCn) + '</p>';
+      html += '<p class="detail-tagline">' + escapeHTML(p.tagline) + '</p>';
+
+      html += '<div class="detail-meta">';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">Role</p><p class="detail-meta-value">' + escapeHTML(p.role) + '</p></div>';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">Tools</p><p class="detail-meta-value">' + escapeHTML(p.tools) + '</p></div>';
+      html += '<div class="detail-meta-block"><p class="detail-meta-label">Output</p><p class="detail-meta-value">' + escapeHTML(p.output) + '</p></div>';
+      html += '</div>';
+
+      html += '<div class="detail-section"><h3>Problem</h3><p>' + escapeHTML(p.problem) + '</p></div>';
+      html += '<div class="detail-section"><h3>My Work</h3><p>' + escapeHTML(p.work) + '</p></div>';
+      html += '<div class="detail-section"><h3>Outcome</h3><p>' + escapeHTML(p.outcome) + '</p></div>';
+      html += '<div class="detail-section"><h3>Reflection</h3><p>' + escapeHTML(p.reflection) + '</p></div>';
+
+      /* Video placeholder — replace with real <video> or <iframe> embed */
+      html += '<div class="detail-media-large">Video Placeholder &mdash; replace with real embed</div>';
+
+      /* PDF placeholder — replace href with real PDF path */
+      html += '<a href="#" class="detail-pdf-btn">';
+      html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+      html += 'View PDF</a>';
+
+      detailInner.innerHTML = html;
+      overlay.classList.add('open');
+      body.style.overflow = 'hidden';
+      overlay.scrollTop = 0;
+
+      document.getElementById('detailBack').addEventListener('click', closeDetail);
+    }
+
+    function closeDetail() {
+      overlay.classList.remove('open');
+      body.style.overflow = '';
+      /* Scroll back to Works section */
+      var works = document.getElementById('works');
+      if (works) works.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function escapeHTML(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    /* Bind open-detail buttons */
+    Array.prototype.forEach.call(document.querySelectorAll('.open-detail'), function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var pid = this.getAttribute('data-project');
+        if (pid) openDetail(pid);
+      });
+    });
+
+    /* Close overlay on Escape */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) {
+        closeDetail();
+      }
+    });
+
+    /* ===========================================================
+       SMOOTH SCROLL FOR NAV LINKS
+       =========================================================== */
+    Array.prototype.forEach.call(document.querySelectorAll('[data-scroll]'), function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    /* ===========================================================
+       NAV SCROLL EFFECT
+       =========================================================== */
+    var nav = document.getElementById('nav');
+    var ticking = false;
+    function updateNav() {
+      if (window.scrollY > 20) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(updateNav);
+        ticking = true;
+      }
+    });
+
+  })();
+  </script>
+</body>
+</html>
