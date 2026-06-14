@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Jiamei Portfolio",
+  "entry": "jiamei-portfolio-html.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-06-14T01:20:55.593Z",
+  "updatedAt": "2026-06-14T01:20:55.612Z",
+  "metadata": {
+    "identifier": "jiamei-portfolio.html",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}
