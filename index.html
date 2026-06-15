@@ -300,6 +300,25 @@
 </head>
 <body>
 
+  <!-- ACCESS GATE -->
+  <script>
+  (function(){
+    var SECRET = 'jiamei2024';
+    var isLocal = window.location.protocol === 'file:';
+    var params = new URLSearchParams(window.location.search);
+    if(!isLocal && params.get('key') !== SECRET){
+      document.documentElement.style.background = '#f5f5f7';
+      document.body.style.display = 'none';
+      document.body.innerHTML = '';
+      var msg = document.createElement('div');
+      msg.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font-family:-apple-system,sans-serif;color:#999;font-size:15px;background:#f5f5f7;';
+      msg.textContent = 'Page not found.';
+      document.body.style.display = 'block';
+      document.body.appendChild(msg);
+    }
+  })();
+  </script>
+
   <!-- NAV -->
   <nav class="nav" id="nav">
     <a href="#" class="nav-logo">Jiamei Guo</a>
